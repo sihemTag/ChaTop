@@ -7,6 +7,7 @@ import com.chatop.backend.exceptions.UserAlreadyExistException;
 import com.chatop.backend.services.IUserService;
 import com.chatop.backend.services.UserService;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,6 +34,7 @@ public class UserController {
         this.tokenProvider = tokenProvider;
     }
 
+    @Operation(summary = "registers a user", description = "returns a token after successfull registration")
     @PostMapping("/api/auth/register")
     public ResponseEntity<JWTToken> register(@RequestBody RegisterDTO registerDto) throws UserAlreadyExistException {
         iUserService.save(registerDto);
@@ -47,9 +49,9 @@ public class UserController {
         return new ResponseEntity<>(new JWTToken(jwt), httpHeaders, HttpStatus.OK);
     }
 
+    @Operation(summary = "login a user", description = "returns a token after successfull login")
     @PostMapping("/api/auth/login")
     public ResponseEntity<JWTToken> authorize(@RequestBody LoginRequest loginDTO) {
-        System.out.println("🔍 Requête de login reçue : " + loginDTO.getEmail());
 
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
                 loginDTO.getEmail(), loginDTO.getPassword());
@@ -62,6 +64,7 @@ public class UserController {
         return new ResponseEntity<>(new JWTToken(jwt), httpHeaders, HttpStatus.OK);
     }
 
+    @Operation(summary = "get the current authenticated user", description = "returns the current user")
     @GetMapping("/api/auth/me")
     public Optional<UserEntity> currentUserName(Authentication authentication) {
         return userService.currentUserName(authentication);
