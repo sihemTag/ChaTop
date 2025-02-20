@@ -3,6 +3,7 @@ package com.chatop.backend.controllers;
 import com.chatop.backend.dto.ResponseMessage;
 import com.chatop.backend.exceptions.NotFoundException;
 import com.chatop.backend.services.MessageService;
+import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,6 +20,7 @@ public class MessageController {
         this.messageService = messageService;
     }
 
+    @Operation(summary = "sends a message to an owner")
     @PostMapping
     public ResponseEntity<ResponseMessage> addMessage(@RequestBody MessageRequest message) throws NotFoundException {
         messageService.addMessage(message.getMessage(), message.getRentalId(), message.getUserId());
