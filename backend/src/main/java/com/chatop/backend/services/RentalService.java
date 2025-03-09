@@ -18,6 +18,7 @@ import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class RentalService {
@@ -67,7 +68,7 @@ public class RentalService {
         return ren;
     }
 
-    public void createRental(String name, Float surface, Float price, String description, MultipartFile file, Authentication authentication){
+    public void createRental(String name, Float surface, Float price, String description, MultipartFile file, Authentication authentication) {
         try {
             if (file.isEmpty()) {
                 return;
@@ -77,11 +78,17 @@ public class RentalService {
             if (!Files.exists(uploadPath)) {
                 Files.createDirectories(uploadPath);
             }
-            // Sauvegarder le fichier sur le serveur
-            Path filePath = uploadPath.resolve(file.getOriginalFilename());
+
+            // Generer un nom unique
+            String originalFileName = file.getOriginalFilename();
+            String fileExtension = originalFileName.substring(originalFileName.lastIndexOf("."));
+            String uniqueFileName = UUID.randomUUID().toString() + fileExtension;
+
+            // Enregistrer le fichier
+            Path filePath = uploadPath.resolve(uniqueFileName);
             file.transferTo(filePath.toFile());
 
-            String fileUrl = uploadPath.resolve(file.getOriginalFilename()).toString().replace("\\", "/");
+            String fileUrl = filePath.toString().replace("\\", "/");
 
             RentalEntity rental = new RentalEntity();
             rental.setName(name);
@@ -91,7 +98,8 @@ public class RentalService {
             rental.setCreatedAt(LocalDate.now());
             rental.setPicture(fileUrl);
 
-            UserEntity owner = userService.currentUserName(authentication).orElseThrow(() -> new IllegalArgumentException("No user authenticated found!"));
+            UserEntity owner = userService.currentUserName(authentication)
+                    .orElseThrow(() -> new IllegalArgumentException("No user authenticated found!"));
             rental.setOwner(owner);
 
             rentalRepository.save(rental);

@@ -34,5 +34,9 @@ public class MessageService {
 
         messageRepository.save(messageEntity);
     }
+
+    public void deleteById(Integer id){
+        messageRepository.deleteById(id);
+    }
 }
 

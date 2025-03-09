@@ -1,5 +1,6 @@
 package com.chatop.backend.controllers;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -22,6 +23,7 @@ public class ImageController {
     String imageDir;
 
     @GetMapping("/{filename}")
+    @SecurityRequirement(name = "bearerAuth")
     public ResponseEntity<Resource> getImage(@PathVariable String filename) {
         try {
             Path imagePath = Paths.get(imageDir + filename);

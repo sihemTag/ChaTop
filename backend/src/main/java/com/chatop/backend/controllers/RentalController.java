@@ -5,6 +5,7 @@ import com.chatop.backend.dto.RentalsResponse;
 import com.chatop.backend.dto.ResponseMessage;
 import com.chatop.backend.exceptions.NotFoundException;
 import com.chatop.backend.services.RentalService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -23,16 +24,19 @@ public class RentalController {
     }
 
     @GetMapping
+    @SecurityRequirement(name = "bearerAuth")
     public RentalsResponse getAll(){
         return rentalService.getAll();
     }
 
     @GetMapping("/{id}")
+    @SecurityRequirement(name = "bearerAuth")
     public RentalResponse getRentalById(@PathVariable Integer id) throws NotFoundException {
         return rentalService.getRentalById(id);
     }
 
     @PostMapping
+    @SecurityRequirement(name = "bearerAuth")
     public ResponseEntity<ResponseMessage> createRental(
             @RequestParam("name") String name,
             @RequestParam("surface") Float surface,
@@ -48,6 +52,7 @@ public class RentalController {
     }
 
     @PutMapping("/{id}")
+    @SecurityRequirement(name = "bearerAuth")
     public ResponseEntity<ResponseMessage> updateRental(
             @PathVariable Integer id,
             @RequestParam("name") String name,
@@ -61,6 +66,7 @@ public class RentalController {
     }
 
     @DeleteMapping("/{id}")
+    @SecurityRequirement(name = "bearerAuth")
     public void deleteRentalById(@PathVariable Integer id){
         rentalService.deleteRental(id);
     }
